@@ -15,22 +15,23 @@ public class MyMemoryAllocationTest {
 	public void testConstructor() {
 		MyMemoryAllocation mal= new MyMemoryAllocation(500, "FF");
 		assert(mal.size() == 499);
-		assert(mal.max_size() == 499);
+		assert(mal.max_size() == 499); //max mem size - 1 because 0 is used for errors - everything is free for now.
 	}
 	private MyMemoryAllocation prepHoles(String algo) {
 		MyMemoryAllocation mal= new MyMemoryAllocation(14, algo);
-		mal.alloc(1);
-		mal.alloc(3);
-		mal.alloc(2);
-		mal.alloc(2);
-		mal.alloc(1);
-		mal.alloc(1);
-		mal.alloc(1);
-		mal.alloc(2);
-		mal.free(2);
-		mal.free(7);
-		mal.free(10);
-		mal.free(12);
+		//14 free space in new object mal of MyMemoryAllocation
+		mal.alloc(1);  //used list->[1, 1]
+		mal.alloc(3);  //used list->[4, 3] //-1 
+		mal.alloc(2);  //used list->[6, 2] 
+		mal.alloc(2);  //used list->[8, 2]
+		mal.alloc(1);  //used list->[9, 1]
+		mal.alloc(1);  //used list->[10,1] //-1
+		mal.alloc(1);  //used list->[11,1]
+		mal.alloc(2);  //used list->[13,2] after all this, we allocated size 13 memory //-1
+		mal.free(2); //free list -> [2, 1]
+		mal.free(7); //free list -> [7, 1]
+		mal.free(10); 
+		mal.free(12); 
 		assert(mal.size() == 8);
 		assert(mal.max_size() == 3);
 		return mal;
@@ -38,17 +39,17 @@ public class MyMemoryAllocationTest {
 	@Test
 	public void testFFAlloc() {
 		MyMemoryAllocation mal = prepHoles("FF");
-		assert(mal.alloc(1)==2);
-		assert(mal.alloc(2)==3);
-		assert(mal.alloc(2)==7);
+		assert(mal.alloc(1)==2);	//used list->[2, 1] with offset(adr)=2, size 1.
+		assert(mal.alloc(2)==3);	//used list->[2, 1]->[3, 2]
+		assert(mal.alloc(2)==7);    //used list->[2, 1]->[3,2]->[7, 2]
 		assert(mal.alloc(3)==0); //failed case ! fragments!
 	}
 	@Test
 	public void testBFAlloc() {
 		MyMemoryAllocation mal = prepHoles("BF");
-		assert(mal.alloc(1)==10);
-		assert(mal.alloc(2)==7);
-		assert(mal.alloc(2)==12);
+		assert(mal.alloc(1)==10); //used list->[10, 1] with offset(adr) = 10, size 1
+		assert(mal.alloc(2)==7); // used list->[10, 1]->[7, 2]
+		assert(mal.alloc(2)==12); // used list->[10, 1]->[7, 2]->[12, 2]
 		assert(mal.alloc(3)==2); //success! less fragments! 
 	}
 	@Test
