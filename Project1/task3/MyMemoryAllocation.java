@@ -3,8 +3,8 @@
 public class MyMemoryAllocation extends MemoryAllocation {
     
     String algorithm; //best fit first fit or next fit
-    MyLinkedListcopy free_list = new MyLinkedListcopy(); //create two empty lists
-    MyLinkedListcopy used_List = new MyLinkedListcopy();
+    MyLinkedList free_list = new MyLinkedList(); //create two empty lists
+    MyLinkedList used_List = new MyLinkedList();
     public static int blockSizeTotal;
 
     public MyMemoryAllocation(int mem_size, String algorithm) {

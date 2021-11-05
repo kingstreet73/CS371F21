@@ -1,7 +1,7 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class MyLinkedListcopy implements Iterable<Block> {
+public class MyLinkedList implements Iterable<Block> {
 
     
    //NODE SECTION
@@ -22,7 +22,7 @@ public class MyLinkedListcopy implements Iterable<Block> {
     
 
     //CONSTRUCT EMPTY LIST
-    public MyLinkedListcopy(){
+    public MyLinkedList(){
         head = null;
         tail = null;
         length = 0;
