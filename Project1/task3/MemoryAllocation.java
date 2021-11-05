@@ -19,12 +19,12 @@ public abstract class MemoryAllocation {
 	abstract public void free(int addr);
 
 	/*
-	 * returns the global size of evailable memory, it is sum of all evailable parts of memory.
+	 * returns the global size of available memory, it is sum of all available parts of memory.
 	 */
 	abstract public int size();
 
 	/*
-	 * returns the size of the biggest evailable part of memory. It is the biggest size that can be allocated.
+	 * returns the size of the biggest available part of memory. It is the biggest size that can be allocated.
 	 */
 	abstract public int max_size();
 

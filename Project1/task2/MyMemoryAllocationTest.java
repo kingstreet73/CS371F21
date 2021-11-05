@@ -19,47 +19,48 @@ public class MyMemoryAllocationTest {
 	}
 	private MyMemoryAllocation prepHoles(String algo) {
 		MyMemoryAllocation mal= new MyMemoryAllocation(14, algo);
-		//14 free space in new object mal of MyMemoryAllocation
-		mal.alloc(1);  //used list->[1, 1]
-		mal.alloc(3);  //used list->[4, 3] //-1 
-		mal.alloc(2);  //used list->[6, 2] 
-		mal.alloc(2);  //used list->[8, 2]
-		mal.alloc(1);  //used list->[9, 1]
-		mal.alloc(1);  //used list->[10,1] //-1
-		mal.alloc(1);  //used list->[11,1]
-		mal.alloc(2);  //used list->[13,2] after all this, we allocated size 13 memory //-1
-		mal.free(2); //free list -> [2, 1]
-		mal.free(7); //free list -> [7, 1]
-		mal.free(10); 
-		mal.free(12); 
-		assert(mal.size() == 8);
-		assert(mal.max_size() == 3);
+		//14 free space in new object mal of MyMemoryAllocation   free list->[1,13]          first fit example
+		mal.alloc(1); //free list->  [2,12]               				used list-> [1,1]
+		mal.alloc(3); //free list->  [5,9]								used list-> [1,1]->[2,3]
+		mal.alloc(2); //free list->  [7,7]								used list-> [1,1]->[2,3]->[5,2]
+		mal.alloc(2); //free list->  [9,5] 								used list-> [1,1]->[2,3]->[5,2]->[7,2]
+		mal.alloc(1); //free list->  [10,4]								used list-> [1,1]->[2,3]->[5,2]->[7,2]->[9,1]
+		mal.alloc(1); //free list->  [11,3]  							used list-> [1,1]->[2,3]->[5,2]->[7,2]->[9,1]->[10,1]
+		mal.alloc(1); //free list->  [12,2] 							used list-> [1,1]->[2,3]->[5,2]->[7,2]->[9,1]->[10,1]->[11,1]
+		mal.alloc(2); //free list->  [14,0] (end)						used list-> [1,1]->[2,3]->[5,2]->[7,2]->[9,1]->[10,1]->[11,1]->[12,2]
+		mal.free(2);  //free list->  [2,3]								used list-> [1,1]->[5,2]->[7,2]->[9,1]->[10,1]->[11,1]->[12,2]
+		mal.free(7);  //free list->  [2,3]->[7,2] 						used list-> [1,1]->[5,2]->[9,1]->[10,1]->[11,1]->[12,2]
+		mal.free(10); //free list->  [2,3]->[7,2]->[10,1] 				used list-> [1,1]->[5,2]->[9,1]->[11,1]->[12,2]
+		mal.free(12); //free list->  [2,3]->[7,2]->[10,1]->[12,2]		used list-> [1,1]->[5,2]->[9,1]->[11,1]
+		assert(mal.size() == 8); //true, free list has 8 blocks
+		assert(mal.max_size() == 3); //true, biggest free block avaialable is of size 3 at offset 2.
 		return mal;
 	}
 	@Test
 	public void testFFAlloc() {
 		MyMemoryAllocation mal = prepHoles("FF");
-		assert(mal.alloc(1)==2);	//used list->[2, 1] with offset(adr)=2, size 1.
-		assert(mal.alloc(2)==3);	//used list->[2, 1]->[3, 2]
-		assert(mal.alloc(2)==7);    //used list->[2, 1]->[3,2]->[7, 2]
-		assert(mal.alloc(3)==0); //failed case ! fragments!
+		//using above test example for mal object
+		assert(mal.alloc(1)==2); //free list-> [3,2]->[7,2]->[10,1]->[12,2]			used list-> [1,1]->[2,1]->[5,2]->[9,1]->[11,1]                         
+		assert(mal.alloc(2)==3); //free list-> [7,2]->[10,1]->[12,2]				used list-> [1,1]->[2,1]->[3,2]->[5,2]->[9,1]->[11,1]  
+		assert(mal.alloc(2)==7); //free list-> [10,1]->[12,2]						used list-> [1,1]->[2,1]->[3,2]->[5,2]->[7,2]->[9,1]->[11,1]  
+		assert(mal.alloc(3)==0); //failed case ! fragments!  None of the free blocks are big enough to store 3 bytes.
 	}
 	@Test
 	public void testBFAlloc() {
 		MyMemoryAllocation mal = prepHoles("BF");
-		assert(mal.alloc(1)==10); //used list->[10, 1] with offset(adr) = 10, size 1
-		assert(mal.alloc(2)==7); // used list->[10, 1]->[7, 2]
-		assert(mal.alloc(2)==12); // used list->[10, 1]->[7, 2]->[12, 2]
-		assert(mal.alloc(3)==2); //success! less fragments! 
+		assert(mal.alloc(1)==10); //free list->  [2,3]->[7,2]->[12,2]				used list-> [1,1]->[5,2]->[9,1]->[10,1]->[11,1]
+		assert(mal.alloc(2)==7);  //free list->  [2,3]->[12,2]						used list-> [1,1]->[5,2]->[7,2]->[9,1]->[10,1]->[11,1]
+		assert(mal.alloc(2)==12); //free list->  [2,3]								used list-> [1,1]->[5,2]->[7,2]->[9,1]->[10,1]->[11,1]->[12,2]
+		assert(mal.alloc(3)==2); //success! less fragments! //free list->			used list-> [1,1]->[2,3]->[5,2]->[7,2]->[9,1]->[10,1]->[11,1]->[12,2]
 	}
 	@Test
 	public void testNFAlloc() {
 		MyMemoryAllocation mal = prepHoles("NF");
-		assert(mal.alloc(1)==2);
-		assert(mal.alloc(2)==7);
-		assert(mal.alloc(2)==12);
-		assert(mal.alloc(3)==0); //also failed case ! fragments!
-		assert(mal.alloc(1)==3); //wrap around
+		assert(mal.alloc(1)==2); //free list->  [3,2]->[7,2]->[10,1]->[12,2]		used list-> [1,1]->[2,1]->[5,2]->[9,1]->[11,1]
+		assert(mal.alloc(2)==7); //free list->  [3,2]->[10,1]->[12,2]				used list-> [1,1]->[2,1]->[5,2]->[7,2]->[9,1]->[11,1]
+		assert(mal.alloc(2)==12);//free list->  [3,2]->[10,1]						used list-> [1,1]->[2,1]->[5,2]->[7,2]->[9,1]->[11,1]->[12,2]
+		assert(mal.alloc(3)==0); //also failed case ! fragments! None of the free blocks are big enough to store 3 bytes(especially 10,1 since this is next fit).
+		assert(mal.alloc(1)==3); //wrap around free list-> [10,1]					used list-> [1,1]->[2,1]->[3,2]->[5,2]->[7,2]->[9,1]->[11,1]->[12,2]
 	}
 
 	@Before
@@ -70,11 +71,11 @@ public class MyMemoryAllocationTest {
 
 	@Test
 	public void testFree1() {
-		MyMemoryAllocation mal = prepHoles("FF");
-		mal.free(2);//check if there is an error message
+		MyMemoryAllocation mal = prepHoles("FF"); 			//free list->  [2,3]->[7,2]->[10,1]->[12,2]			used list-> [1,1]->[5,2]->[9,1]->[11,1]
+		mal.free(2);//check if there is an error message (error because offset 2 is already a free block - invalid)	
 		assert(errContent.toString().length() != 0);
-		mal.free(1); 
-		assert(mal.alloc(4)==1);
+		mal.free(1); //consolidate/merge blocks @ addr 2+1	//free list->  [1,4]->[7,2]->[10,1]->[12,2]			used list-> [5,2]->[9,1]->[11,1]
+		assert(mal.alloc(4)==1);							//free list->  [7,2]->[10,1]->[12,2]				used list-> [1,4]->[5,2]->[9,1]->[11,1]
 	}
 	@After
 	public void restoreStreams() {
@@ -84,9 +85,9 @@ public class MyMemoryAllocationTest {
 	@Test
 	public void testFree2() {
 		MyMemoryAllocation mal = prepHoles("FF");
-		mal.free(9);
-		mal.free(5);
-		assert(mal.max_size() == 9);
+		mal.free(9);										//free list->  [2,3]->[7,4]->[12,2]			used list-> [1,1]->[5,2]->[11,1]
+		mal.free(5);										//free list->  [2,9]->[12,2]				used list-> [1,1]->[11,1]
+		assert(mal.max_size() == 9);//true,offset2=9bytes	//free list->  [2,9]->[12,2]				used list-> [1,1]->[11,1]
 	}
 	
 	@Test
