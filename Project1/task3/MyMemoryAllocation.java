@@ -1,7 +1,7 @@
 
 
 public class MyMemoryAllocation extends MemoryAllocation {
-    
+    //t
     String algorithm; //best fit first fit or next fit
     MyLinkedList free_list = new MyLinkedList(); //create two empty lists
     MyLinkedList used_List = new MyLinkedList();
