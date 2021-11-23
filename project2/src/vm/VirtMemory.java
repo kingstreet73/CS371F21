@@ -7,6 +7,7 @@ public class VirtMemory extends Memory {
 	public VirtMemory(PhyMemory ram) {
 		super(ram);
 		// TODO Auto-generated constructor stub
+
 	}
 
 	@Override
@@ -18,6 +19,7 @@ public class VirtMemory extends Memory {
 	@Override
 	public byte read(int addr) {
 		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 

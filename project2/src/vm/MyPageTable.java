@@ -8,5 +8,6 @@ public class MyPageTable {
 		int vpn;
 		int pfn;
 		boolean dirty;
+
 	}
 }
