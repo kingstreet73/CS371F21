@@ -31,6 +31,7 @@ public class VirtMemoryTest {
         byte x = m.read(0xFFFFFF);
         MatcherAssert.assertThat(0, not(errContent.toString().length()));
         //Code review q1: what is the max legit address for m.write()??
+				//I do not know
         m.shutdown();
     }
     @After
@@ -64,8 +65,10 @@ public class VirtMemoryTest {
         int readCount = m.getPhyMemory().readCountDisk();
         assertEquals(1, writeCount);
         //Code review q2: why is there only 1 disk write?
+				//i do not know
         assertEquals(1, readCount);
         //Code review q3: why is there only 1 disk read?
+				//i do not know
     }
     @Test
     public void test4_WriteBackToMultiBlocks() {
@@ -81,8 +84,10 @@ public class VirtMemoryTest {
         int readCount = m.getPhyMemory().readCountDisk();
         assertEquals(32, writeCount);
         //Code review q4: why are there 32 disk writes?
+				//i do not know
         assertEquals(32, readCount);
         //Code review q5: why are there 32 disk read?
+				//i do not know
     }
     //the following are more realistic workloads
     static final int TEST_SIZE = 64*1024;// 64K, test on max address space!
@@ -106,8 +111,10 @@ public class VirtMemoryTest {
         m.shutdown();
         assertEquals(2048, m.getPhyMemory().writeCountDisk());
         //Code review q6: why are there 2048 disk writes?
+				//i do not know
         assertEquals(2048, m.getPhyMemory().readCountDisk());
         //Code review q7: why are there 2048 disk reads?
+				//i do not know
 
     }
     @Test
@@ -124,8 +131,10 @@ public class VirtMemoryTest {
         m.shutdown();
         assertEquals(2048, m.getPhyMemory().writeCountDisk());
         //Code review q8: why are there 2048 disk writes?
+				//i do not know
         assertEquals(1792, m.getPhyMemory().readCountDisk());
         //Code review q9: why are there 1792 disk reads? Why is it different from test5?
+				//i do not know
 
     }
     @Test
