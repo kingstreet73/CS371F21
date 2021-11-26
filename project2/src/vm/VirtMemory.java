@@ -1,32 +1,30 @@
 package vm;
 
 import storage.PhyMemory;
+import java.util.*;
 
 public class VirtMemory extends Memory {
 
-	public VirtMemory(PhyMemory ram) {
+	private static final PhyMemory ram = null;
+	Hashtable hash = new Hashtable();
+	public VirtMemory() {
 		super(ram);
-		// TODO Auto-generated constructor stub
-
+		
 	}
 
 	@Override
 	public void write(int addr, byte value) {
-		// TODO Auto-generated method stub
-
+		hash.put(addr, value);
 	}
 
 	@Override
 	public byte read(int addr) {
-		// TODO Auto-generated method stub
-		
-		return 0;
+		return (byte) hash.get(addr);
 	}
 
 	@Override
 	protected void sync_to_disk() {
-		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 }
